@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
 import dao.RegistrationDAO;
 import model.UserLogin;
 
@@ -20,6 +20,7 @@ public class LoginController extends HttpServlet {
 		
 		userMobile=request.getParameter("userMobile");
 		userPassword=request.getParameter("userPassword");
+		
 		System.out.println(userMobile+userPassword);
 		
 		UserLogin user=new UserLogin(userMobile, userPassword);
@@ -29,8 +30,10 @@ public class LoginController extends HttpServlet {
 		boolean b= regDAO.validateUser(user);
 		
 		if(b) {
-			
-			response.sendRedirect("UserDashboard.jsp");
+			HttpSession session=request.getSession();
+			System.out.println(userMobile);
+			session.setAttribute("userMobile",userMobile);
+			response.sendRedirect("UserPassController");
 			
 		}else {
 			

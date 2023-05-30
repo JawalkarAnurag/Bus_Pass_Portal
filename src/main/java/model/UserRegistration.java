@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class UserRegistration {
 	
-	String userName,userMail,userMobile,userPassword,UserAadhaar;
+	String userName,userMail,userMobile,userPassword;
 
 	public String getUserName() {
 		return userName;
@@ -38,30 +38,17 @@ public class UserRegistration {
 		this.userPassword = userPassword;
 	}
 
-	public String getUserAadhaar() {
-		return UserAadhaar;
-	}
-
-	public void setUserAadhaar(String userAadhaar) {
-		UserAadhaar = userAadhaar;
-	}
-
-	public UserRegistration(String userName, String userMail, String userMobile, String userPassword,
-			String userAadhaar) {
+	public UserRegistration(String userName, String userMail, String userMobile, String userPassword) {
 		super();
 		this.userName = userName;
 		this.userMail = userMail;
 		this.userMobile = userMobile;
 		this.userPassword = userPassword;
-		UserAadhaar = userAadhaar;
 	}
 
 	public UserRegistration() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
-	
-	 
 }
+	

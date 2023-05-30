@@ -1,4 +1,4 @@
-package controller;
+ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,18 +30,14 @@ public class RegistrationController extends HttpServlet {
 	 userMobile=request.getParameter("userMobile");
 	 userPassword=request.getParameter("userPassword");
 	 
-	 p=request.getPart("userAadhaar");
-	 filename= p.getSubmittedFileName();
 	 
 	 System.out.println(userName+" "+userMail+" "+userMobile+" "+userPassword);
-	 System.out.println(filename);
 	 
 	 UserRegistration user =new UserRegistration();
 	 user.setUserName(userName);
 	 user.setUserMail(userMail);
 	 user.setUserMobile(userMobile);
 	 user.setUserPassword(userPassword);
-	 user.setUserAadhaar(filename);
 	 
 	 List<UserRegistration> userList=new ArrayList<UserRegistration>();
 	 userList.add(user);
@@ -51,10 +47,6 @@ public class RegistrationController extends HttpServlet {
 	 
 	 if(i>0){
 		 
-		 String path=getServletContext().getRealPath("")+"image";
-		 File file=new File(path);
-		 System.out.println(path);
-		 p.write(path+File.separator+filename);
 		 response.sendRedirect("UserLogin.jsp");
 		 
 	 }else {
