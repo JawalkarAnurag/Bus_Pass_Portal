@@ -1,10 +1,6 @@
-package controller;
+   package controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -44,23 +40,14 @@ public class PaymentController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 try {
+			 System.out.println(" IN payment Controller");
+			 int amount=Integer.parseInt(request.getParameter("amount"));
 	            
-				/*
-				 * BufferedReader reader = request.getReader(); StringBuilder requestBody = new
-				 * StringBuilder(); String line; while ((line = reader.readLine()) != null) {
-				 * requestBody.append(line); } reader.close();
-				 * 
-				 * // Parse the request body as JSON JSONObject jsonBody = new
-				 * JSONObject(requestBody.toString());
-				 * 
-				 * // Extract the amount parameter String amount = jsonBody.getString("amount");
-				 */
-			 
 			 RazorpayClient razorpayClient = new RazorpayClient("rzp_test_rk7RvIPUGSCeip", "x8pIbULR1OUqF3LBWwJCcZlE");
 
 	            // Create a Map of payment parameters
 			 JSONObject orderRequest = new JSONObject();
-			 orderRequest.put("amount", request.getParameter("amount")); // amount in the smallest currency unit
+			 orderRequest.put("amount", amount*100); // amount in the smallest currency unit
 			 orderRequest.put("currency", "INR");
 			 orderRequest.put("receipt", "order_rcptid_11");
 

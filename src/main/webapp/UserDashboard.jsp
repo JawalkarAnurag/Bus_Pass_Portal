@@ -16,7 +16,14 @@ function pass(){
 	location.href="PassType.jsp";
 }
 
-function initiatePayment(amount){
+function getTransactions(userMobile){
+	console.log("in transactions");
+	console.log(userMobile);
+	window.location.href='TransactionController?userMobile='+userMobile;
+	
+}
+
+function initiatePayment(amount,appID){
 	
 	console.log("payment Started");
 	console.log(amount+"(in paise)");
@@ -27,32 +34,17 @@ function initiatePayment(amount){
 	            amount: amount
 	        },
 	        success: function(orderId) {
-	            createPayment(orderId, amount);
+	            createPayment(orderId, amount,appID);
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("Error: " + error);
 	        }
 	    });
-	
-	//var amount = 500; // Payment amount in paise
-
-    // Send an AJAX request to the servlet to get the order ID
-   /* var xhr = new XMLHttpRequest();
-    xhr.open("POST","PaymentController", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            var orderId = xhr.responseText;
-            createPayment(orderId, amount);
-        } else if (xhr.readyState === XMLHttpRequest.DONE) {
-            console.error("Error: " + xhr.status);
-        }
-    };
-    xhr.send("amount=" + amount); */
+	 
 }
 	
 
-function createPayment(orderId, amount) {
+function createPayment(orderId, amount,appID) {
    
 	var options = {
         "key": "rzp_test_rk7RvIPUGSCeip", // Replace with your actual Key ID
@@ -63,7 +55,6 @@ function createPayment(orderId, amount) {
 //         "image":"image/PMPML_logo.jpg",
         "order_id": orderId, // Razorpay order ID
         "handler": function (response) {
-        	alert("Payment Successful");
         	swal("Payment Successful!", "Your Pass will be mailed to you!", "success");
         	console.log(response.razorpay_payment_id);
         	console.log(response.razorpay_order_id);
@@ -71,6 +62,29 @@ function createPayment(orderId, amount) {
             // Callback function executed after successful payment
             console.log(response);
             // You can perform further actions here, such as updating the payment status on the server
+            
+             var pay_id=response.razorpay_payment_id;
+        	var order_id=response.razorpay_order_id;
+        	var rzp_sign=response.razorpay_signature;
+            
+            var encoded_pay_id = encodeURIComponent(pay_id);
+              var encoded_order_id = encodeURIComponent(order_id);
+              var encoded_rzp_sign = encodeURIComponent(rzp_sign);
+
+              console.log(pay_id);
+              console.log(order_id);
+              console.log(rzp_sign);
+
+              var encoded_pay_id = encodeURIComponent(pay_id);
+              var encoded_order_id = encodeURIComponent(order_id);
+              var encoded_rzp_sign = encodeURIComponent(rzp_sign);
+
+
+  		  // Append the encoded data to the servlet URL
+  		  var servletURL = 'PassSuccessController?pay_id='+encoded_pay_id+'&order_id='+encoded_order_id+'&rzp_sign='+encoded_rzp_sign+'&appID='+appID +'&amount='+amount;
+
+  		  // Make a GET request to the servlet URL
+  		  window.location.href = servletURL ;
         },
         "prefill": {
             "name": "", // Pre-filled customer name
@@ -106,7 +120,7 @@ function createPayment(orderId, amount) {
 	<%!String userMobile = null;
 	String stud_doc_uploaded = null;
 	String doc_status = null, approvedStatus = "Approved", student = "Student", adult = "Adult Citizen",
-			senior = "Senior Citizen";
+			senior = "Senior Citizen",applied="Applied", reject="Rejected";
 	String allRoute = "all_route", singleRoute = "single_route", amount = null, monthly = "Monthly", yearly = "Yearly";
 	List<ApplicationData> appList = new LinkedList<ApplicationData>();%>
 
@@ -125,8 +139,7 @@ function createPayment(orderId, amount) {
 
 		<button class="btn btn-success btn-block" onclick=pass()>Apply
 			for Pass</button>
-		<button class="btn btn-success btn-block">Documents</button>
-		<button class="btn btn-success btn-block">Transactions</button>
+		<button class="btn btn-success btn-block" onclick="getTransactions('<%=userMobile%>')">Transactions</button>
 
 	</div>
 
@@ -149,6 +162,7 @@ function createPayment(orderId, amount) {
 		<h1>Welcome to PMPML Pass Portal</h1>
 
 		<%for(ApplicationData appData : appList){ %>
+		<%if(appData.getStatus().equals(applied)|| appData.getStatus().equals(approvedStatus)|| appData.getStatus().equals(reject)){ %>
 
 		<div class="card rounded">
 			<div class="card-body">
@@ -196,59 +210,60 @@ function createPayment(orderId, amount) {
 				</div>
 				<%if(appData.getCitizenType().equals(student) && appData.getPassType().equals(monthly)){ 
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="75000";
+						amount="750";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="50000";
+						amount="500";
 					}
 				}
 				if (appData.getCitizenType().equals(adult) && appData.getPassType().equals(monthly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="90000";
+						amount="900";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="70000";
+						amount="700";
 					}
 					
 				}
 				 if (appData.getCitizenType().equals(senior) && appData.getPassType().equals(monthly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="50000";
+						amount="500";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="50000";
+						amount="500";
 				
 					}
 				}
 				if(appData.getCitizenType().equals(student) && appData.getPassType().equals(yearly)){ 
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="500000";
+						amount="5000";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="500000";
+						amount="5000";
 					}
 				}
 				if (appData.getCitizenType().equals(adult) && appData.getPassType().equals(yearly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="750000";
+						amount="7500";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="750000";
+						amount="7500";
 					}
 					
 				}
 				if (appData.getCitizenType().equals(senior) && appData.getPassType().equals(yearly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="350000";
+						amount="3500";
 					} 
 					else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="350000";
+						amount="3500";
 					}
 					
 				}%>
 				
 				<%if(appData.getStatus().equals(approvedStatus)){ %>
 
-				<button onclick="initiatePayment('<%=amount%>')" class="btn btn-primary">Payment</button>
+				<button onclick="initiatePayment('<%=amount%>','<%=appData.getApplicationID() %>')" class="btn btn-primary">Payment</button>
 				
 				<%}%>
 			</div>
 		</div>
+		<%} %>
 		<%} %>
 
 

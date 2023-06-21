@@ -142,6 +142,12 @@
 	function appList() {
 		location.href = "ApplicationListController";
 	}
+	
+	function logout(){
+		
+		location.href="AdminLogin.jsp";
+		
+	}
 	function viewApplication(appID) {
 		  // Encode the data
 		  var encodedData = encodeURIComponent(appID);

@@ -9,7 +9,7 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script> 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
 
 function pass(){
@@ -53,22 +53,30 @@ function initiatePayment(amount){
 	
 
 function createPayment(orderId, amount) {
-    var options = {
+   
+	var options = {
         "key": "rzp_test_rk7RvIPUGSCeip", // Replace with your actual Key ID
         "amount": amount , // Payment amount in paise
         "currency": "INR", // Currency code
         "name": "PMPML", // Displayed on the payment popup
         "description": "Pass Payment",// Displayed on the payment popup
-        "image":"image/PMPML_logo.jpg",
+//         "image":"image/PMPML_logo.jpg",
         "order_id": orderId, // Razorpay order ID
         "handler": function (response) {
-        	Swal.fire('Good job!','You clicked the button!','success');
+        	swal("Payment Successful!", "Your Pass will be mailed to you!", "success");
         	console.log(response.razorpay_payment_id);
         	console.log(response.razorpay_order_id);
         	console.log(response.razorpay_signature);
             // Callback function executed after successful payment
             console.log(response);
             // You can perform further actions here, such as updating the payment status on the server
+           /*  var encodedData = encodeURIComponent(response);
+
+  		  // Append the encoded data to the servlet URL
+  		  var servletURL = 'PaymentSuccessController?response=' + encodedData;
+
+  		  // Make a GET request to the servlet URL
+  		  window.location.href = servletURL ; */
         },
         "prefill": {
             "name": "", // Pre-filled customer name
@@ -90,9 +98,7 @@ function createPayment(orderId, amount) {
        console.log(response.error.reason);
        console.log(response.error.metadata.order_id);
        console.log(response.error.metadata.payment_id);
-       Swal.fire({icon: 'error',title: 'Oops...',text: 'Something went wrong!',
-    	   footer: '<a href="">Why do I have this issue?</a>'
-    	 });
+       swal("Failed!!", "Oops Something went wrong!!", "error");
 });
     rzp.open();
 }
@@ -106,7 +112,7 @@ function createPayment(orderId, amount) {
 	<%!String userMobile = null;
 	String stud_doc_uploaded = null;
 	String doc_status = null, approvedStatus = "Approved", student = "Student", adult = "Adult Citizen",
-			senior = "Senior Citizen";
+			senior = "Senior Citizen",applied="Applied";
 	String allRoute = "all_route", singleRoute = "single_route", amount = null, monthly = "Monthly", yearly = "Yearly";
 	List<ApplicationData> appList = new LinkedList<ApplicationData>();%>
 
@@ -149,6 +155,7 @@ function createPayment(orderId, amount) {
 		<h1>Welcome to PMPML Pass Portal</h1>
 
 		<%for(ApplicationData appData : appList){ %>
+		<%if(appData.getStatus().equals(applied)|| appData.getStatus().equals(approvedStatus)){ %>
 
 		<div class="card rounded">
 			<div class="card-body">
@@ -196,48 +203,48 @@ function createPayment(orderId, amount) {
 				</div>
 				<%if(appData.getCitizenType().equals(student) && appData.getPassType().equals(monthly)){ 
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="75000";
+						amount="750";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="50000";
+						amount="500";
 					}
 				}
 				if (appData.getCitizenType().equals(adult) && appData.getPassType().equals(monthly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="90000";
+						amount="900";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="70000";
+						amount="700";
 					}
 					
 				}
 				 if (appData.getCitizenType().equals(senior) && appData.getPassType().equals(monthly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="50000";
+						amount="500";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="50000";
+						amount="500";
 				
 					}
 				}
 				if(appData.getCitizenType().equals(student) && appData.getPassType().equals(yearly)){ 
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="500000";
+						amount="5000";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="500000";
+						amount="5000";
 					}
 				}
 				if (appData.getCitizenType().equals(adult) && appData.getPassType().equals(yearly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="750000";
+						amount="7500";
 					}else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="750000";
+						amount="7500";
 					}
 					
 				}
 				if (appData.getCitizenType().equals(senior) && appData.getPassType().equals(yearly)){
 					if(appData.getPassRouteType().equals(allRoute)){
-						amount="350000";
+						amount="3500";
 					} 
 					else if(appData.getPassRouteType().equals(singleRoute)){
-						amount="350000";
+						amount="3500";
 					}
 					
 				}%>
@@ -249,6 +256,7 @@ function createPayment(orderId, amount) {
 				<%}%>
 			</div>
 		</div>
+		<%} %>
 		<%} %>
 
 

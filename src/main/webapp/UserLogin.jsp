@@ -44,7 +44,7 @@
                   
                   <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? 
                   <a href="Registration.jsp" style="color: #393f81;">Register here</a>
-                  <a href="AdminLogin.jsp" style="color: #393f81;">Admin Login</a>
+                  <a href="AdminLogin.jsp" style="color-: #393f81;">Admin Login</a>
                   </p>
                 </form>
 

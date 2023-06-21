@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import connector.DataSource;
 import model.ApplicationData;
+import model.PassTransactions;
 import model.StudentDocuments;
 
 public class PassDAO {
@@ -272,6 +274,93 @@ public class PassDAO {
 
 		
 		return appDataList;
+	}
+
+	public int statusComplete(String appID) {
+
+		int i=0;
+		if(con==null) {
+			con=DataSource.getConnection();
+		}
+		
+		try {
+			PreparedStatement ps=con.prepareStatement("update pass_applications set status='Completed' where APPLICATION_ID= ?");
+			ps.setString(1, appID);
+			i=ps.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return i;
+	}
+
+	public int passTransaction(List<PassTransactions> ptList) {
+
+		int i=0;
+		if(con.equals(null)) {
+			con=DataSource.getConnection();
+		}
+		
+		PassTransactions pt=ptList.get(0);
+		
+		try {
+			PreparedStatement ps=con.prepareStatement("insert into pass_transactions values(?,?,?,?,?,?,?,?,?)");
+			ps.setString(1, pt.getPassId());
+			ps.setString(2, pt.getPassType());
+			ps.setString(3, pt.getUserMob());
+			ps.setString(4, pt.getDate());
+			ps.setString(5,pt.getPassRouteType());
+			ps.setString(6,pt.getAmount());
+			ps.setString(7,pt.getPay_id());
+			ps.setString(8,pt.getOrder_id());
+			ps.setString(9, pt.getRzp_sign());
+			
+			i=ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return i;
+	}
+
+	public List<PassTransactions> getTransactions(String userMobile) {
+
+		List<PassTransactions> ptList=new ArrayList<>();
+		
+		int i=0;
+		
+		if(con==null) {
+			con=DataSource.getConnection();
+		}
+		
+		try {
+			Statement s=con.createStatement();
+			rs=s.executeQuery("select * from pass_transactions where user_mob="+userMobile);
+			
+			while(rs.next()) {
+				PassTransactions pt=new PassTransactions();
+				pt.setPassId(rs.getString("PASS_ID"));
+				pt.setPassType(rs.getString("PASS_TYPE"));
+				pt.setUserMob(rs.getString("USER_MOB"));
+				pt.setDate(rs.getString("PASS_DATE"));
+				pt.setPassRouteType(rs.getString("PASS_ROUTE_TYPE"));
+				pt.setAmount(rs.getString("AMOUNT"));
+				pt.setPay_id(rs.getString("PAY_ID"));
+				pt.setOrder_id(rs.getString("ORDER_ID"));
+				pt.setRzp_sign(rs.getString("RZP_SIGN"));
+				
+				ptList.add(pt);
+				
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ptList;
 	}
 
 	/*

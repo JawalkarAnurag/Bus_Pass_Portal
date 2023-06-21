@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,16 +20,19 @@ public class UserPassController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		HttpSession session=request.getSession();
+		System.out.println("IN userpassController");
 		
-		String userMobile=(String)session.getAttribute("userMobile");
+		HttpSession session=request.getSession();
+		String applied ="Applied",approved="Approved";
+		
+		String userMob=(String)session.getAttribute("userMobile");
 		System.out.println("In userPassController");
 		
-		System.out.println(userMobile);
+		System.out.println(userMob);
 		
 		PassDAO passDAO=new PassDAO();
 		
-		List<ApplicationData> userAppList=new LinkedList<ApplicationData>();
+		List<ApplicationData> userAppList=new ArrayList<>();
 		
 		
 		List<ApplicationData> appList=passDAO.getUserApplication();
@@ -36,10 +40,13 @@ public class UserPassController extends HttpServlet {
 		
 		
 		for (ApplicationData applicationData : appList) {
-			if(applicationData.getUserMobile().equals(userMobile)) {
+			
+			System.out.println("Application Mob :"+applicationData.getUserMobile());
+			System.out.println("User Mob :"+userMob);
+			
+			if(applicationData.getUserMobile().equals(userMob)) {
 				
 				userAppList.add(applicationData);
-				
 			}
 		}
 		

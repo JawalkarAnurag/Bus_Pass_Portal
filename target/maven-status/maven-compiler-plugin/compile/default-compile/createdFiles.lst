@@ -4,6 +4,7 @@ controller\AdminAuthController.class
 model\UserRegistration.class
 controller\PaymentController.class
 controller\StudentDocController.class
+model\DayPass.class
 controller\UserPassController.class
 controller\SeniorPassController.class
 controller\LoginController.class
@@ -18,6 +19,7 @@ dao\RegistrationDAO.class
 controller\RegistrationController.class
 controller\AdminLogController.class
 model\StudentDocuments.class
+controller\DialyPassController.class
 model\AdminLogin.class
 controller\StudentAppController.class
 controller\ViewApplicationController.class
